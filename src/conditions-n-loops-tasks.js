@@ -290,8 +290,17 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  let total = 0;
+  for (let i = 0; i < arr.length; i += 1) total += arr[i];
+
+  let left = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    const right = total - left - arr[i];
+    if (left === right) return i;
+    left += arr[i];
+  }
+  return -1;
 }
 
 /**
@@ -344,7 +353,7 @@ function rotateMatrix(/* matrix */) {
  * Take into account that the array can be very large. Consider how you can optimize your solution.
  * In this task, the use of methods of the Array and String classes is not allowed.
  *
- * @param {number[]} arr - The array to sort.
+ * @param {number[]} array - The array to sort.
  * @return {number[]} The sorted array.
  *
  * @example:
@@ -352,8 +361,33 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const array = arr;
+  function sort(left, right) {
+    if (left >= right) return;
+
+    const pivot = array[Math.floor((left + right) / 2)];
+    let l = left;
+    let r = right;
+
+    while (l <= r) {
+      while (array[l] < pivot) l += 1;
+      while (array[r] > pivot) r -= 1;
+      if (l <= r) {
+        const temp = array[l];
+        array[l] = array[r];
+        array[r] = temp;
+        l += 1;
+        r -= 1;
+      }
+    }
+
+    if (left < r) sort(left, r);
+    if (l < right) sort(l, right);
+  }
+
+  sort(0, array.length - 1);
+  return array;
 }
 
 /**
@@ -373,8 +407,37 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  function shuffleStep(string) {
+    let evenElems = '';
+    let oddElems = '';
+    for (let i = 0; i < string.length; i += 1) {
+      if (i % 2 === 0) {
+        evenElems += string[i];
+      } else {
+        oddElems += string[i];
+      }
+    }
+    return evenElems + oddElems;
+  }
+
+  let cycleLength = 0;
+  let current = shuffleStep(str);
+  cycleLength += 1;
+
+  while (current !== str) {
+    current = shuffleStep(current);
+    cycleLength += 1;
+  }
+
+  const iterationsNum = iterations % cycleLength;
+
+  let res = str;
+  for (let i = 0; i < iterationsNum; i += 1) {
+    res = shuffleStep(res);
+  }
+
+  return res;
 }
 
 /**
